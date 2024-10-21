@@ -1,0 +1,11 @@
+from sklearn.svm import OneClassSVM
+
+# Initialize and train the model
+ocsvm_model = OneClassSVM(kernel='rbf', gamma=0.1, nu=0.1)
+ocsvm_model.fit(X_train)
+
+# Make predictions
+y_pred = ocsvm_model.predict(X_test)
+
+# Evaluate the model
+print("Anomaly detection accuracy:", np.mean(y_pred == y_test))
