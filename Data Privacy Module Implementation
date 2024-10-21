@@ -1,0 +1,20 @@
+def adjust_privacy_settings(user_data, model_prediction, user_preference):
+    privacy_levels = {'low': 1, 'medium': 2, 'high': 3}
+    model_suggestion = privacy_levels[model_prediction]
+    user_pref = privacy_levels[user_preference]
+
+    # Adjust privacy level based on model and user preference
+    adjusted_level = max(model_suggestion, user_pref)
+
+    return {
+        'profile_visibility': 'public' if adjusted_level == 1 else 'friends' if adjusted_level == 2 else 'private',
+        'post_visibility': 'public' if adjusted_level == 1 else 'friends' if adjusted_level == 2 else 'only_me',
+        'data_sharing': 'all' if adjusted_level == 1 else 'partial' if adjusted_level == 2 else 'minimal'
+    }
+
+# Example usage
+user_data = X_test.iloc[0]
+model_prediction = rf_model.predict([user_data])[0]
+user_preference = 'medium'
+adjusted_settings = adjust_privacy_settings(user_data, model_prediction, user_preference)
+print(adjusted_settings)
