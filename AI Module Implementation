@@ -1,0 +1,35 @@
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from sklearn.preprocessing import OneHotEncoder
+
+# ... (your existing data generation and train-test split code) ...
+
+# Check if 'gender' column exists before proceeding with encoding
+if 'gender' in X_train.columns:
+    # Create a OneHotEncoder object
+    encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore') # sparse=False for compatibility with RandomForestClassifier
+
+    encoded_X_train = encoder.fit_transform(X_train[['gender']])
+    encoded_X_test = encoder.transform(X_test[['gender']])
+
+    # Get feature names from the encoder
+    feature_names = encoder.get_feature_names_out(['gender'])
+
+    # Create DataFrames from the encoded data
+    encoded_X_train_df = pd.DataFrame(encoded_X_train, columns=feature_names, index=X_train.index)
+    encoded_X_test_df = pd.DataFrame(encoded_X_test, columns=feature_names, index=X_test.index)
+
+    # Drop the original 'gender' column and concatenate the encoded columns
+    X_train = X_train.drop('gender', axis=1).join(encoded_X_train_df)
+    X_test = X_test.drop('gender', axis=1).join(encoded_X_test_df)
+
+# Initialize and train the model
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = rf_model.predict(X_test)
+
+# Evaluate the model
+print(classification_report(y_test, y_pred))
