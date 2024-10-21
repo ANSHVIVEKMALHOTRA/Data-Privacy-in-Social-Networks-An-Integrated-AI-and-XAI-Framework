@@ -1,0 +1,21 @@
+
+# Generate synthetic data
+np.random.seed(42)
+n_samples = 10000
+
+data = {
+    'user_id': range(n_samples),
+    'age': np.random.randint(18, 65, n_samples),
+    'gender': np.random.choice(['M', 'F'], n_samples),
+    'posts_count': np.random.randint(0, 1000, n_samples),
+    'friends_count': np.random.randint(0, 5000, n_samples),
+    'privacy_level': np.random.choice(['low', 'medium', 'high'], n_samples),
+    'engagement_score': np.random.uniform(0, 1, n_samples)
+}
+
+df = pd.DataFrame(data)
+
+# Split the data into training and testing sets
+X = df.drop(['privacy_level', 'user_id'], axis=1)
+y = df['privacy_level']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
